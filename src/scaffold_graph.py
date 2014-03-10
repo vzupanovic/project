@@ -10,17 +10,14 @@ class ScaffoldGraph:
 		self.scaffoldData = scaffoldData
 		self.edgeData = edgeData
 		
-		self.scaffoldGraph = {}
+		self.scaffoldGraph = [] #list of touples pair of nodes (u,v), orientation d_u, d_v (u, v, d_u, d_v)
 		
 		self.filterUnnecessaryEdges(5) # edge must be supported with more then 5 reads
 		
 		for edge in self.edgeData:
-			edgeKey = (edge[0], edge[2]) #contigs that determin the edge
-			edgeDict = {} #every edge has its own dict
-
-			edgeDict[edgeKey] = ([edge[1], edge[3], edge[4], edge[5], edge[6]],0,0) #last parameters - sum of contigs in edge, sum of gaps
-			self.scaffoldGraph[edge[0]] = edgeDict
-			self.scaffoldGraph[edge[1]] = edgeDict
+			self.scaffoldGraph.append((edge[0], edge[2], edge[1], edge[3]))
+		
+		
 		print self.scaffoldGraph
 			
 			

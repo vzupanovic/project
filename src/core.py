@@ -3,6 +3,7 @@ import sys
 import os.path
 from loader import *
 from scaffold_graph import *
+from contig_graph import *
 
 class Core:
 	def __init__(self, clusterFile, contigFile, scaffoldFile):
@@ -19,6 +20,10 @@ class Core:
 		
 		self.precomputeContigSums() #precompute sum of contigs inside edges
 		#print self.edgeData
+		
+		self.contigGraph = ContigGraph(self.orderedContigsList) #define simple contig graph structure
+		
+		print self.contigGraph.getPath('631041', '629209')
 		
 		
 	def doLocalSearch(self):
