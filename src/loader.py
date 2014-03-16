@@ -31,6 +31,7 @@ class Loader: #class for loading files in simple datastructures
 		
 	def loadClusterFile(self): #load cluster file into list and return it
 		self.edgeData = []
+		self.clusterDataDouble = {} #dict keys are pairs of contigs, necessary for constructing scaffold graph
 		stream = open(self.clusterFile, 'r')
 		data = stream.readlines()
 		for line in data:
@@ -38,7 +39,9 @@ class Loader: #class for loading files in simple datastructures
 			temp = line.split('\t')
 			self.edgeData.append(temp)
 		self.edgeData = self.edgeData[1:]
-		return self.edgeData
+		for edge in self.edgeData:
+			self.clusterDataDouble[(edge[0],edge[2])] = edge
+		return self.edgeData, self.clusterDataDouble
 		
 		
 	def loadContigFile(self): #load contig file into dictionary, key is contig name and return it
@@ -52,6 +55,7 @@ class Loader: #class for loading files in simple datastructures
 		self.scaffoldData = {}
 		self.orderedContigs = [] #list of all oredred contigs, neccessary for swaping contigs
 		self.origin = {} #dict of origin, every contigs (key) has its origin scaffold
+		self.contigInfo = {} #dict, key is contig name values are (orientation, len, gap size)
 		stream = open(self.scaffoldFile, 'r')
 		data = stream.readlines()
 		for line in data:
@@ -66,6 +70,7 @@ class Loader: #class for loading files in simple datastructures
 				self.scaffoldData[currentHeader].append(temp)
 				self.orderedContigs.append(temp[0])
 				self.origin[temp[0]] = currentHeader
-		return self.scaffoldData, self.orderedContigs, self.origin
+				self.contigInfo[temp[0]] = (temp[1], temp[2], temp[3]) 
+		return self.scaffoldData, self.orderedContigs, self.origin, self.contigInfo
 		
 		

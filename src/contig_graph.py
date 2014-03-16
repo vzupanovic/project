@@ -7,30 +7,41 @@ from loader import *
 class ContigGraph:
 	def __init__(self, orderedContigsList, contigInfo): #simple graph structure for contigs
 	
-		self.simpleContigGraph = {}
+		self.simpleContigGraph = {} #double linked list like structure
+		self.contigPositionMapper = {} #stores absolute positions of contigs, updates when contigs are swapped
+		
+		self.contigInfo = contigInfo
 		
 		sys.setrecursionlimit(100000) #sample recursion limit, have to change this
 		
 		copyContigList = orderedContigsList[1:]
 		
 		pointer = 0
+		position = 0 
 		
 		for contig in orderedContigsList:  #initialzie empty simple graph strucure (similar to double linked list) with gap values inside dictionary
 			self.simpleContigGraph[contig] = [{},{}]
+			self.contigPositionMapper[contig] = position #saves positions of the contigs in dict for easy access
+			position = position + 1
 		
 		for contig in orderedContigsList: #get contigs from list and put them in the graph like structure
 			if pointer < len(copyContigList):
 				self.simpleContigGraph[contig][1][copyContigList[pointer]] = 0
-				self.simpleContigGraph[contig][1][copyContigList[pointer]] =  contigInfo[self.simpleContigGraph[contig][1].keys()[0]][2]
+				self.simpleContigGraph[contig][1][copyContigList[pointer]] =  self.contigInfo[self.simpleContigGraph[contig][1].keys()[0]][2]
 				
 			pointer += 1
 			
 		for pointer in range(len(orderedContigsList)-1, 0, -1):
 			contig = orderedContigsList[pointer]
 			self.simpleContigGraph[contig][0][orderedContigsList[pointer - 1]] = 0
-			self.simpleContigGraph[contig][0][orderedContigsList[pointer - 1]] =  contigInfo[self.simpleContigGraph[contig][0].keys()[0]][2]
+			self.simpleContigGraph[contig][0][orderedContigsList[pointer - 1]] =  self.contigInfo[self.simpleContigGraph[contig][0].keys()[0]][2]
 		
+	
 		
+	def getDirection(self, contig1, contig2): #direction for graph visitation
+		if self.contigPositionMapper[contig1] > self.contigPositionMapper[contig2]:
+			return 0 #reverse
+		return 1 #normal
 		
 	def getNextNode(self, contigID): #get next node
 		nextKeys = self.simpleContigGraph[contigID][1].keys()
@@ -72,15 +83,14 @@ class ContigGraph:
 	
 	def getSum(self, start, end, direction = 1, contigSum = 0): #return sum of contigs between the two border contigs
 		if start == end:
-			return contigSum + int(contigInfo[start][1])
+			return contigSum + int(self.contigInfo[start][1])
 		if not self.simpleContigGraph.has_key(start):
 			return 0
 		node = self.simpleContigGraph[start][direction].keys()[0]
 		if node:
-			contigSum = int(contigInfo[start][1]) + self.getSum(node, end, direction, contigSum)
+			contigSum = int(self.contigInfo[start][1]) + self.getSum(node, end, direction, contigSum)
 		return contigSum
 
-		
 		
 	def basicSwap(self, contig1, contig2):
 			firstChange = self.simpleContigGraph[contig2][0].keys()[0]
@@ -99,12 +109,12 @@ class ContigGraph:
 	def swapContigs(self, contig1, contig2): #swap to contigs, two basic cases
 		if self.isPreviousNode(contig1, contig2): #contig2 previous
 			self.basicSwap(contig1, contig2)
-	
+			
 			
 		elif self.isPreviousNode(contig2, contig1):
 			(contig2, contig1) = (contig1, contig2)
 			self.basicSwap(contig1, contig2)
-
+			
 		else:
 			firstChange1 = self.simpleContigGraph[contig1][0].keys()[0] #memorize first contig to change
 			lastChange1 = self.simpleContigGraph[contig1][1].keys()[0]
@@ -126,6 +136,11 @@ class ContigGraph:
 			self.simpleContigGraph[contig2][0] = pomPrevious
 			self.simpleContigGraph[contig1][1] = self.simpleContigGraph[contig2][1]
 			self.simpleContigGraph[contig2][1] = pomNext
+			
+		#update contig position mapper dict
+		pom = self.contigPositionMapper[contig1]
+		self.contigPositionMapper[contig1] = self.contigPositionMapper[contig2]
+		self.contigPositionMapper[contig2] = pom
 			
 			
 			
