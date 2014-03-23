@@ -34,9 +34,6 @@ class ScaffoldGraph:
 		
 		
 		
-		print self.scaffoldGraph
-		
-		#return self.scaffoldGraph'''
 		
 	
 	def getDistance(self, firstContig, secondContig): #get distance between contigs (edge), this is mean!

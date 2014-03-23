@@ -36,20 +36,7 @@ class ContigGraph:
 			self.simpleContigGraph[contig][0][orderedContigsList[pointer - 1]] = 0
 			self.simpleContigGraph[contig][0][orderedContigsList[pointer - 1]] =  self.contigInfo[self.simpleContigGraph[contig][0].keys()[0]][2]
 		
-		print self.simpleContigGraph
-		print "ja sam velicina", self.getContigSize('623771')	
-		
-		print "rekurzivno", self.getPath('623771', '623739')
-		print "iterativno", self.getPathIterative('623771', '623739')
-		
-		
-		#print "prije", self.getPreviousNode('625209')		
-		print "rekurzivno", self.getContigSum('633173','633425',0)
-		print "iterativno", self.getContigSumIterative('633173','633425',0)
-		#print "pozicije prije", self.contigPositionMapper['633467'],  self.contigPositionMapper['633471']
-		#self.swapContigs('633467','633471')
-		#print "pozicije poslije", self.contigPositionMapper['633467'],  self.contigPositionMapper['633471']
-		#print "ja sam suma", self.getSum('621003','621001')
+
 		
 	def getContigSize(self, contigID): #return contig length(size)
 		return int(self.contigInfo[contigID][1])
