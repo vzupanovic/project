@@ -35,13 +35,14 @@ class ScaffoldGraph:
 		
 		
 		
+		
 	
 	def getDistance(self, firstContig, secondContig): #get distance between contigs (edge), this is mean!
 		distancePrevious = 0
 		distanceNext = 0
 		if firstContig in self.scaffoldGraph:
 			dataPrevious = self.scaffoldGraph[firstContig][0]
-			dataNext = self.scaffoldGraph[firstContig][0]
+			dataNext = self.scaffoldGraph[firstContig][1]
 			if secondContig in dataPrevious:
 				distancePrevious = dataPrevious[secondContig][0]
 			if secondContig in dataNext:
@@ -54,7 +55,7 @@ class ScaffoldGraph:
 		deviationNext = 0
 		if firstContig in self.scaffoldGraph:
 			dataPrevious = self.scaffoldGraph[firstContig][0]
-			dataNext = self.scaffoldGraph[firstContig][0]
+			dataNext = self.scaffoldGraph[firstContig][1]
 			if secondContig in dataPrevious:
 				deviationPrevious = dataPrevious[secondContig][1]
 			if secondContig in dataNext:
@@ -67,7 +68,7 @@ class ScaffoldGraph:
 		sizeNext = 0
 		if firstContig in self.scaffoldGraph:
 			dataPrevious = self.scaffoldGraph[firstContig][0]
-			dataNext = self.scaffoldGraph[firstContig][0]
+			dataNext = self.scaffoldGraph[firstContig][1]
 			if secondContig in dataPrevious:
 				sizePrevious = dataPrevious[secondContig][2]
 			if secondContig in dataNext:
