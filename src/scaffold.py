@@ -36,25 +36,39 @@ class ContigGraph:
 			self.simpleContigGraph[contig][0][orderedContigsList[pointer - 1]] = 0
 			self.simpleContigGraph[contig][0][orderedContigsList[pointer - 1]] =  self.contigInfo[self.simpleContigGraph[contig][0].keys()[0]][2]
 		
-	
+		print self.simpleContigGraph
+		print "ja sam velicina", self.getContigSize('623771')	
+		
+		print "rekurzivno", self.getPath('623771', '623739')
+		print "iterativno", self.getPathIterative('623771', '623739')
+		
+		
+		#print "prije", self.getPreviousNode('625209')		
+		print "rekurzivno", self.getContigSum('633173','633425',0)
+		print "iterativno", self.getContigSumIterative('633173','633425',0)
+		#print "pozicije prije", self.contigPositionMapper['633467'],  self.contigPositionMapper['633471']
+		#self.swapContigs('633467','633471')
+		#print "pozicije poslije", self.contigPositionMapper['633467'],  self.contigPositionMapper['633471']
+		#print "ja sam suma", self.getSum('621003','621001')
+		
+	def getContigSize(self, contigID): #return contig length(size)
+		return int(self.contigInfo[contigID][1])
+		
 		
 	def getDirection(self, contig1, contig2): #direction for graph visitation
 		if self.contigPositionMapper[contig1] > self.contigPositionMapper[contig2]:
 			return 0 #reverse
 		return 1 #normal
 		
+		
 	def getNextNode(self, contigID): #get next node
-		nextKeys = self.simpleContigGraph[contigID][1].keys()
-		if nextKeys:
-			return nextKeys[0]
-		return 'EOF'
+		nextNode = self.simpleContigGraph[contigID][1].keys()[0]
+		return nextNode
 		
 	
 	def getPreviousNode(self, contigID): #get previous node
-		previousKeys = self.simpleContigGraph[contigID][0].keys()
-		if previousKeys:
-			return previousKeys[0]
-		return 'BEG'
+		previousNode = self.simpleContigGraph[contigID][0].keys()[0]
+		return previousNode
 		
 		
 	def isPreviousNode(self, contigID, previous): #check if node is previous
@@ -65,6 +79,9 @@ class ContigGraph:
 	def isNextNode(self, contigID, nextNode): #check if node is next
 		if self.getNextNode(contigID) == nextNode:
 			return True
+			
+	def getNodeNeighbour(self, start, direction): #get previous or next node depending on the direction
+		return self.simpleContigGraph[start][direction].keys()[0]
 		
 		
 	def getPath(self, start, end, direction = 1, path = []): #return list of contigs between two border contigs direction (1-front), 0-backwards
@@ -73,29 +90,45 @@ class ContigGraph:
 			return path
 		if not self.simpleContigGraph.has_key(start):
 			return None
-		node = self.simpleContigGraph[start][direction].keys()[0]
+		node = self.getNodeNeighbour(start, direction)
 		if node not in path:
 			newPath = self.getPath(node, end, direction, path)
 			if newPath:
 				return newPath
 		return None
 		
+		
+	def getPathIterative(self, start, end, direction = 1): #get path without recursion, simple iterative way, for direction = 0 go backwards
+		path = []
+		while start != end:
+			path = path + [start]
+			start = self.getNodeNeighbour(start, direction)
+		return path + [end]
+		
 	
-	def getSum(self, start, end, direction = 1, contigSum = 0): #return sum of contigs between the two border contigs
+	def getContigSum(self, start, end, direction = 1, contigSum = 0): #return sum of contigs between the two border contigs
 		if start == end:
 			return contigSum + int(self.contigInfo[start][1])
 		if not self.simpleContigGraph.has_key(start):
 			return 0
-		node = self.simpleContigGraph[start][direction].keys()[0]
+		node = self.getNodeNeighbour(start, direction)
 		if node:
-			contigSum = int(self.contigInfo[start][1]) + self.getSum(node, end, direction, contigSum)
+			contigSum = self.getContigSize(start) + self.getContigSum(node, end, direction, contigSum)
+		return contigSum
+		
+		
+	def getContigSumIterative(self, start, end, direction = 1, contigSum = 0): #get contig sum in iterative way
+		while start != end:
+			contigSum = contigSum + self.getContigSize(start) #contig len is writtend inside contig info structure
+			start = self.getNodeNeighbour(start, direction)
+		contigSum += self.getContigSize(end)
 		return contigSum
 
 		
 	def basicSwap(self, contig1, contig2):
 			firstChange = self.simpleContigGraph[contig2][0].keys()[0]
 			lastChange = self.simpleContigGraph[contig1][1].keys()[0]
-			self.simpleContigGraph[firstChange][1] = self.simpleContigGraph[contig2][1]
+			self.simpleContigGraph[firstChange][1] = self.simpleContigGraph[contig2][1] #swaping references to dicts
 			self.simpleContigGraph[lastChange][0] = self.simpleContigGraph[contig1][0]
 			pom = self.simpleContigGraph[contig2][0]
 			self.simpleContigGraph[contig2][0] = self.simpleContigGraph[contig2][1]

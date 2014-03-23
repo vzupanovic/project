@@ -3,7 +3,7 @@ import math
 import sys
 import os.path
 from loader import *
-from contig_graph import *
+from scaffold import *
 
 class ScaffoldGraph:
 	def __init__(self, contigData, scaffoldData, edgeData): #contigData - dict, edgeData - list, scaffoldData - dict
@@ -34,6 +34,9 @@ class ScaffoldGraph:
 		
 		
 		
+		print self.scaffoldGraph
+		
+		#return self.scaffoldGraph'''
 		
 	
 	def getDistance(self, firstContig, secondContig): #get distance between contigs (edge), this is mean!

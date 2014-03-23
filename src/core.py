@@ -3,7 +3,7 @@ import sys
 import os.path
 from loader import *
 from scaffold_graph import *
-from contig_graph import *
+from scaffold import *
 
 class Core:
 	def __init__(self, clusterFile, contigFile, scaffoldFile):
@@ -23,7 +23,7 @@ class Core:
 		self.precomputeContigSums() #precompute sum of contigs inside edges
 		#to do precompute gaps
 		
-		
+		#print self.contigGraph
 		
 		
 	def doLocalSearch(self):
@@ -69,7 +69,7 @@ class Core:
 					data = data + (cSum,)
 					self.scaffoldGraphObject.scaffoldGraph[wantedNode][1][edge[0]] = data
 		
-		
+		#print self.scaffoldGraphObject.scaffoldGraph
 			
 		
 		
